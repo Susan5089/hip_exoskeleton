@@ -54,272 +54,278 @@ Initialize(const std::string& meta_file,bool load_obj)
 	std::string str;        // define str
 	std::string index;      // define index
 	std::stringstream ss;   // define 
-	MASS::Character* character = new MASS::Character();   //
-	character ->SetEnvironment(*this);
 
-	while(!ifs.eof())
+
+	for(int _i = 0; _i++; _i<2)
 	{
-		str.clear();
-		index.clear();
-		ss.clear();
+		MASS::Character* character = new MASS::Character();   //
+		character ->SetEnvironment(*this);
 
-		std::getline(ifs,str);
-		ss.str(str);
-		ss>>index;
-		if(!index.compare("skill"))
-		{	
-			std::string str2;
-			ss>>str2;    
-			if(!str2.compare("walking")) 
-			{                       
-				this->SetWalkingSkill(true);
-				character->walk_skill=true;
-			}
-			else if(!str2.compare("squatting"))  
-			{
-				this->SetSquattingSkill(true);
-				character->squat_skill=true;
-			}
-		}
-		if(!index.compare("use_muscle"))
-		{	
-			std::string str2;
-			ss>>str2;
-			if(!str2.compare("true"))
-				this->SetUseMuscle(true);           
-			else                                     //mUseMuscle = true
-				this->SetUseMuscle(false);
-		}
-		if(!index.compare("use_muscleNetWork"))
-		{	
-			std::string str2;
-			ss>>str2;
-			if(!str2.compare("true"))
-				this->SetUseMuscleNN(true);           
-			else                                     //mUseMuscle = true
-				this->SetUseMuscleNN(false);
-		}
-       	if(!index.compare("use_humanNetwork"))
-		{	
-			std::string str2;
-			ss>>str2;
-			if(!str2.compare("true"))
-				this->SetUseHumanNN(true);           
-			else                                     //mUseMuscle = true
-				this->SetUseHumanNN(false);
-		}
-		else if(!index.compare("symmetry"))
-		{	
-			std::string str2;
-			ss>>str2;
-			if(!str2.compare("true"))
-				this->SetSymmetry(true);           
-			else                                     //mSymmetry = true
-				this->SetSymmetry(false);
-		}
-		else if(!index.compare("use_COP"))
-		{	
-			std::string str2;
-			ss>>str2;
-			if(!str2.compare("true"))
-				this->SetUseCOP(true);           
-			else                                     //mUseCOP = true
-				this->SetUseCOP(false);
-		}
-		else if(!index.compare("com_independent"))
-		{	
-			std::string str2;
-			ss>>str2;
-			if(!str2.compare("true"))
-				this->SetCOMindependent(true);           
-			else                                     //mCOMindependent = true
-				this->SetCOMindependent(false);
-		}
-		else if(!index.compare("con_hz")){
-			int hz;
-			ss>>hz;                              // control_hz = 30hz = mControlHz
-			this->SetControlHz(hz);
-		}
-		else if(!index.compare("sim_hz")){
-			int hz;
-			ss>>hz;                             // sim_hz = 600hz  = mSimulationHz
-			this->SetSimulationHz(hz);
-		}
-		else if(!index.compare("terminal_time")){	
-			double terminal_time;	
-			ss>>terminal_time;                            	
-			this->SetTerminalTime(terminal_time);	
-		}
-		else if(!index.compare("PD_param")){
-			double a;
-			ss>>a;
-			this->SetPDParameters(a);  // reward parameters w_q, w_v, w_ee, w_com, w_torque
-		}
-		// else if(!index.compare("foot_clearance_termination")){
-		// 	double a,b;
-		// 	ss>>a>>b;
-		// 	this->SetFootClearance(a,b);  // reward parameters w_q, w_v, w_ee, w_com, w_torque
-		// }
-		// else if(!index.compare("foot_tolerance_termination")){
-		// 	double a;
-		// 	ss>>a;
-		// 	this->SetFootTolerances(a);  // reward parameters w_q, w_v, w_ee, w_com, w_torque
-		// }
-		else if(!index.compare("target_motion_visualization"))	
-		{		
-			std::string str2;	
-			ss>>str2;	
-			if(!str2.compare("true"))	
-				this->Settargetmotion_visual(true);           	
-			else                                    	
-				this->Settargetmotion_visual(false);	
-		}
-		else if(!index.compare("exo_file")){
-			std::string str2;                                                               //read skel_file
-			ss>>str2;
-			character->LoadExofromUrdf(std::string(MASS_ROOT_DIR)+str2,load_obj);
-			mUseExo= true;
-			character->MergeHumanandExo();
-		}
-		else if(!index.compare("human_obj_visualization")){
-			std::string str2;                                                               //read skel_file
-			ss>>str2;
-			if(!str2.compare("true"))	
-			 	this->Sethumanobj_visual(true);
-			if(!str2.compare("false"))	
-			 	this->Sethumanobj_visual(false);
-		}
-		else if(!index.compare("human_file")){
-			std::string str2,str3;                                                               //read skel_file
-			ss>>str2>>str3;
-			if(!str3.compare("true"))
-			{
-				character->LoadSkeleton(std::string(MASS_ROOT_DIR)+str2,load_obj);
-				mUsehuman = true;
-			}
-		}
-		else if(!index.compare("muscle_file")){
-			std::string str2;
-			ss>>str2;
-			if(this->GetUseMuscle())
-				character->LoadMuscles(std::string(MASS_ROOT_DIR)+str2);
-			if(mUsehuman)
-				character->ChangeHumanframe();
-		}
-		else if(!index.compare("muscle_force_limit_visual")){	
-			double max_visual, min_visual;	
-			ss>>max_visual>>min_visual ;                            	
-			character->SetMusclelimitforVisual(max_visual, min_visual);	
-		}
-		else if(!index.compare("plot_related_muscle")){	
-			std::string str2;	
-			ss>>str2;	
-			if(!str2.compare("true"))	                      	
-				this->SetPlotRelatedMuscle(true);	
-		}
-		else if(!index.compare("model_component_file")){
-			// std::cout << "============" << std::endl; 
-			std::string str2,str3;
-			ss>>str2>>str3;
-			if(!str3.compare("true"))
-				character->LoadModelComponents(std::string(MASS_ROOT_DIR)+str2);
-		}	
-		else if(!index.compare("Human_spring_force_file")){	
-			std::string str2,str3;    //str2： path, str3: true	
-			ss>>str2>>str3;	
-			if(!str3.compare("true"))	
-				character->LoadHumanforce(std::string(MASS_ROOT_DIR)+str2);	
-		}			
-		else if(!index.compare("Human_bushing_force_file")){	
-			std::string str2,str3;    //str2： path, str3: true	
-			ss>>str2>>str3;	
-			if(!str3.compare("true"))	
-				character->LoadHumanforce(std::string(MASS_ROOT_DIR)+str2);	
-		}	
-		// else if(!index.compare("map_file")){
-		// 	std::string str2;                                                             //read map_file
-		// 	ss>>str2;
-		// 	character->LoadMap(std::string(MASS_ROOT_DIR)+str2);
-		// }
-		else if(!index.compare("exo_initial_state")){ 
-			std::string str2;                                                             //read map_file
-			ss>>str2;
-			character->LoadExoInitialState(std::string(MASS_ROOT_DIR)+str2);
-			mUseExoinitialstate = true;
-         }
-		else if(!index.compare("human_initial_state")){ 
-			std::string str2;                                                             //read map_file
-			ss>>str2;
-			character->LoadHumanInitialState(std::string(MASS_ROOT_DIR)+str2);
-			mUseHumaninitialstate = true;
-         }
-		 else if(!index.compare("Joint_constraint_file")){
-			// std::cout << "============" << std::endl; 
-			std::string str2,str3;
-			ss>>str2>>str3;
-			if(!str3.compare("true"))
-				character->LoadConstraintComponents(std::string(MASS_ROOT_DIR)+str2);
-		}
-		// else if(!index.compare("bvh_file")){        
-        //                       //read map_file
-		// 	std::string str2,str3;    //str2： path, str3: true
-		// 	ss>>str2>>str3;
-		// 	bool cyclic = false;
-		// 	if(!str3.compare("true"))
-		// 		cyclic = true;    
-		// 	character->LoadBVH(std::string(MASS_ROOT_DIR)+str2,cyclic);
-		// }
-		else if(!index.compare("motion_file")){                                              //read map_file
-			std::string str2,str3;    //str2： path, str3: true
-			ss>>str2>>str3;
-			bool cyclic = false;
-			if(!str3.compare("true"))
-				cyclic = true;    
-			character->LoadBVH(std::string(MASS_ROOT_DIR)+str2,cyclic);
-		}
+		while(!ifs.eof())
+		{
+			str.clear();
+			index.clear();
+			ss.clear();
 
-		else if(!index.compare("reward_param")){
-			double a,b,c,d,e,f;
-			ss>>a>>b>>c>>d>>e>>f;
-			this->SetRewardParameters(a,b,c,d,e,f);  // reward parameters w_q, w_v, w_ee, w_com, w_torque
+			std::getline(ifs,str);
+			ss.str(str);
+			ss>>index;
+			if(!index.compare("skill"))
+			{	
+				std::string str2;
+				ss>>str2;    
+				if(!str2.compare("walking")) 
+				{                       
+					this->SetWalkingSkill(true);
+					character->walk_skill=true;
+				}
+				else if(!str2.compare("squatting"))  
+				{
+					this->SetSquattingSkill(true);
+					character->squat_skill=true;
+				}
+			}
+			if(!index.compare("use_muscle"))
+			{	
+				std::string str2;
+				ss>>str2;
+				if(!str2.compare("true"))
+					this->SetUseMuscle(true);           
+				else                                     //mUseMuscle = true
+					this->SetUseMuscle(false);
+			}
+			if(!index.compare("use_muscleNetWork"))
+			{	
+				std::string str2;
+				ss>>str2;
+				if(!str2.compare("true"))
+					this->SetUseMuscleNN(true);           
+				else                                     //mUseMuscle = true
+					this->SetUseMuscleNN(false);
+			}
+			if(!index.compare("use_humanNetwork"))
+			{	
+				std::string str2;
+				ss>>str2;
+				if(!str2.compare("true"))
+					this->SetUseHumanNN(true);           
+				else                                     //mUseMuscle = true
+					this->SetUseHumanNN(false);
+			}
+			else if(!index.compare("symmetry"))
+			{	
+				std::string str2;
+				ss>>str2;
+				if(!str2.compare("true"))
+					this->SetSymmetry(true);           
+				else                                     //mSymmetry = true
+					this->SetSymmetry(false);
+			}
+			else if(!index.compare("use_COP"))
+			{	
+				std::string str2;
+				ss>>str2;
+				if(!str2.compare("true"))
+					this->SetUseCOP(true);           
+				else                                     //mUseCOP = true
+					this->SetUseCOP(false);
+			}
+			else if(!index.compare("com_independent"))
+			{	
+				std::string str2;
+				ss>>str2;
+				if(!str2.compare("true"))
+					this->SetCOMindependent(true);           
+				else                                     //mCOMindependent = true
+					this->SetCOMindependent(false);
+			}
+			else if(!index.compare("con_hz")){
+				int hz;
+				ss>>hz;                              // control_hz = 30hz = mControlHz
+				this->SetControlHz(hz);
+			}
+			else if(!index.compare("sim_hz")){
+				int hz;
+				ss>>hz;                             // sim_hz = 600hz  = mSimulationHz
+				this->SetSimulationHz(hz);
+			}
+			else if(!index.compare("terminal_time")){	
+				double terminal_time;	
+				ss>>terminal_time;                            	
+				this->SetTerminalTime(terminal_time);	
+			}
+			else if(!index.compare("PD_param")){
+				double a;
+				ss>>a;
+				this->SetPDParameters(a);  // reward parameters w_q, w_v, w_ee, w_com, w_torque
+			}
+			// else if(!index.compare("foot_clearance_termination")){
+			// 	double a,b;
+			// 	ss>>a>>b;
+			// 	this->SetFootClearance(a,b);  // reward parameters w_q, w_v, w_ee, w_com, w_torque
+			// }
+			// else if(!index.compare("foot_tolerance_termination")){
+			// 	double a;
+			// 	ss>>a;
+			// 	this->SetFootTolerances(a);  // reward parameters w_q, w_v, w_ee, w_com, w_torque
+			// }
+			else if(!index.compare("target_motion_visualization"))	
+			{		
+				std::string str2;	
+				ss>>str2;	
+				if(!str2.compare("true"))	
+					this->Settargetmotion_visual(true);           	
+				else                                    	
+					this->Settargetmotion_visual(false);	
+			}
+			else if(!index.compare("exo_file")){
+				std::string str2;                                                               //read skel_file
+				ss>>str2;
+				character->LoadExofromUrdf(std::string(MASS_ROOT_DIR)+str2,load_obj);
+				mUseExo= true;
+				character->MergeHumanandExo();
+			}
+			else if(!index.compare("human_obj_visualization")){
+				std::string str2;                                                               //read skel_file
+				ss>>str2;
+				if(!str2.compare("true"))	
+					this->Sethumanobj_visual(true);
+				if(!str2.compare("false"))	
+					this->Sethumanobj_visual(false);
+			}
+			else if(!index.compare("human_file")){
+				std::string str2,str3;                                                               //read skel_file
+				ss>>str2>>str3;
+				if(!str3.compare("true"))
+				{
+					character->LoadSkeleton(std::string(MASS_ROOT_DIR)+str2,load_obj);
+					mUsehuman = true;
+				}
+			}
+			else if(!index.compare("muscle_file")){
+				std::string str2;
+				ss>>str2;
+				if(this->GetUseMuscle())
+					character->LoadMuscles(std::string(MASS_ROOT_DIR)+str2);
+				if(mUsehuman)
+					character->ChangeHumanframe();
+			}
+			else if(!index.compare("muscle_force_limit_visual")){	
+				double max_visual, min_visual;	
+				ss>>max_visual>>min_visual ;                            	
+				character->SetMusclelimitforVisual(max_visual, min_visual);	
+			}
+			else if(!index.compare("plot_related_muscle")){	
+				std::string str2;	
+				ss>>str2;	
+				if(!str2.compare("true"))	                      	
+					this->SetPlotRelatedMuscle(true);	
+			}
+			else if(!index.compare("model_component_file")){
+				// std::cout << "============" << std::endl; 
+				std::string str2,str3;
+				ss>>str2>>str3;
+				if(!str3.compare("true"))
+					character->LoadModelComponents(std::string(MASS_ROOT_DIR)+str2);
+			}	
+			else if(!index.compare("Human_spring_force_file")){	
+				std::string str2,str3;    //str2： path, str3: true	
+				ss>>str2>>str3;	
+				if(!str3.compare("true"))	
+					character->LoadHumanforce(std::string(MASS_ROOT_DIR)+str2);	
+			}			
+			else if(!index.compare("Human_bushing_force_file")){	
+				std::string str2,str3;    //str2： path, str3: true	
+				ss>>str2>>str3;	
+				if(!str3.compare("true"))	
+					character->LoadHumanforce(std::string(MASS_ROOT_DIR)+str2);	
+			}	
+			// else if(!index.compare("map_file")){
+			// 	std::string str2;                                                             //read map_file
+			// 	ss>>str2;
+			// 	character->LoadMap(std::string(MASS_ROOT_DIR)+str2);
+			// }
+			else if(!index.compare("exo_initial_state")){ 
+				std::string str2;                                                             //read map_file
+				ss>>str2;
+				character->LoadExoInitialState(std::string(MASS_ROOT_DIR)+str2);
+				mUseExoinitialstate = true;
+			}
+			else if(!index.compare("human_initial_state")){ 
+				std::string str2;                                                             //read map_file
+				ss>>str2;
+				character->LoadHumanInitialState(std::string(MASS_ROOT_DIR)+str2);
+				mUseHumaninitialstate = true;
+			}
+			else if(!index.compare("Joint_constraint_file")){
+				// std::cout << "============" << std::endl; 
+				std::string str2,str3;
+				ss>>str2>>str3;
+				if(!str3.compare("true"))
+					character->LoadConstraintComponents(std::string(MASS_ROOT_DIR)+str2);
+			}
+			// else if(!index.compare("bvh_file")){        
+			//                       //read map_file
+			// 	std::string str2,str3;    //str2： path, str3: true
+			// 	ss>>str2>>str3;
+			// 	bool cyclic = false;
+			// 	if(!str3.compare("true"))
+			// 		cyclic = true;    
+			// 	character->LoadBVH(std::string(MASS_ROOT_DIR)+str2,cyclic);
+			// }
+			else if(!index.compare("motion_file")){                                              //read map_file
+				std::string str2,str3;    //str2： path, str3: true
+				ss>>str2>>str3;
+				bool cyclic = false;
+				if(!str3.compare("true"))
+					cyclic = true;    
+				character->LoadBVH(std::string(MASS_ROOT_DIR)+str2,cyclic);
+			}
+
+			else if(!index.compare("reward_param")){
+				double a,b,c,d,e,f;
+				ss>>a>>b>>c>>d>>e>>f;
+				this->SetRewardParameters(a,b,c,d,e,f);  // reward parameters w_q, w_v, w_ee, w_com, w_torque
+			}
+			else if(!index.compare("smooth_reward_param")){	
+				double a,b,c,d;	
+				ss>>a>>b>>c>>d;	
+				this->SetSmoothRewardParameters(a,b,c,d);  // smoothreward parameters w_sroot, w_saction, w_storque	
+			}
+			// else if(!index.compare("foot_clearance_reward")){	
+			// 	double a;	
+			// 	ss>>a;	
+			// 	this->SetFootClearanceRewardParameter(a);  // smoothreward parameters w_sroot, w_saction, w_storque	
+			// 	std::cout << "hrewr9 "  << std::endl;
+			// }
+			else if(!index.compare("observation_latency")){
+				double a;
+				ss>>a;
+				this->observation_latency = a;
+			}
+			else if(!index.compare("reward")){
+				std::string str2;
+				ss >> str2; 
+				auto reward = RewardFactory::CreateReward(str2);
+				reward->SetEnvironment(*this); 
+				reward->ReadFromStream(ss); 
+				mReward.insert(std::pair<std::string, Reward*>(reward->GetName(),reward)); 
+			}
+			else if(!index.compare("joint_reward_weight")){
+				double a,b,c;
+				ss>>a>>b>>c;
+				this->SetJointRewardParameters(a,b,c);  // reward parameters w_q, w_v, w_ee, w_com, w_torque
+			}
 		}
-		else if(!index.compare("smooth_reward_param")){	
-			double a,b,c,d;	
-			ss>>a>>b>>c>>d;	
-			this->SetSmoothRewardParameters(a,b,c,d);  // smoothreward parameters w_sroot, w_saction, w_storque	
-		}
-		// else if(!index.compare("foot_clearance_reward")){	
-		// 	double a;	
-		// 	ss>>a;	
-		// 	this->SetFootClearanceRewardParameter(a);  // smoothreward parameters w_sroot, w_saction, w_storque	
-		// 	std::cout << "hrewr9 "  << std::endl;
-		// }
-		else if(!index.compare("observation_latency")){
-			double a;
-			ss>>a;
-			this->observation_latency = a;
-		}
-		else if(!index.compare("reward")){
-			std::string str2;
-			ss >> str2; 
-			auto reward = RewardFactory::CreateReward(str2);
-			reward->SetEnvironment(*this); 
-			reward->ReadFromStream(ss); 
-			mReward.insert(std::pair<std::string, Reward*>(reward->GetName(),reward)); 
-		}
-        else if(!index.compare("joint_reward_weight")){
-			double a,b,c;
-			ss>>a>>b>>c;
-			this->SetJointRewardParameters(a,b,c);  // reward parameters w_q, w_v, w_ee, w_com, w_torque
-		}
+		ifs.close();      // close metafile
+		
+		// if (mUseExo)
+		// 	character->MergeHumanandExo();
+
+		character->SetPDParameters(kp,sqrt(2.0*kp));   // PD parameters： kp=400, kv=sqrt(2*kp)
+		// this->SetCharacter(character);
+		this->AddCharacter(character);
 	}
-	ifs.close();      // close metafile
-	
-	// if (mUseExo)
-	// 	character->MergeHumanandExo();
-
-	character->SetPDParameters(kp,sqrt(2.0*kp));   // PD parameters： kp=400, kv=sqrt(2*kp)
-	this->SetCharacter(character);
 	this->SetGround(MASS::BuildFromFile(std::string(MASS_ROOT_DIR)+std::string("/data/ground.xml")));
 	randomize_terrain();
 	
@@ -361,103 +367,108 @@ Initialize(const std::string& meta_file,bool load_obj)
 void
 Environment::
 Initialize()   // define the related dofs
-{
-	if(mCharacter->GetSkeleton()==nullptr){
-		std::cout<<"Initialize character First"<<std::endl;
-		exit(0);
-	}
-	if(mCharacter->GetSkeleton()->getRootBodyNode()->getParentJoint()->getType()=="FreeJoint")   //FreeJoint: 6 degree
-		mRootJointDof = 6;
-	else if(mCharacter->GetSkeleton()->getRootBodyNode()->getParentJoint()->getType()=="PlanarJoint") //PlanarJoint:
-		mRootJointDof = 3;	
-	else
-		mRootJointDof = 0;
-		
-	mNumHumanActiveDof = mCharacter->GetHumandof()-mRootJointDof; 
-	if (mUseExo)    
-		mNumExoActiveDof = mCharacter->GetSkeleton()->getNumDofs()-mNumHumanActiveDof - mRootJointDof ;  // remove the root Exo dof, ground_exo_waist(prismatic joint) and hipadd
-	else
-		mNumExoActiveDof = 0; 
-	std::cout << "human dof -----"  << mNumHumanActiveDof << "  exo dof -----"  << mNumExoActiveDof << std::endl;  // 
-	std::cout << "total dof -----" << mCharacter->GetSkeleton()->getNumDofs() << std::endl;
-	if(mUseMuscle)
-	{
-		int num_total_related_dofs = 0;
-		for(auto m : mCharacter->GetMuscles()){
-			m->Update();    //
-			num_total_related_dofs += m->GetNumRelatedDofs();   //num_total_related_dofts = m + num_related_dofs
-		}
-		mCurrentMuscleTuple.JtA = Eigen::VectorXd::Zero(num_total_related_dofs);  // define vector JtA
-		mCurrentMuscleTuple.L = Eigen::MatrixXd::Zero(mNumHumanActiveDof,mCharacter->GetMuscles().size()); //define Matrix L
-		mCurrentMuscleTuple.b = Eigen::VectorXd::Zero(mNumHumanActiveDof); // define vector b
-		mCurrentMuscleTuple.tau_des = Eigen::VectorXd::Zero(mNumHumanActiveDof); // define vector tau_dex
-		mActivationLevels = Eigen::VectorXd::Zero(mCharacter->GetMuscles().size()); // define activation levels a
-		std::cout << "muscle.size():" << mActivationLevels.rows() << std::endl;
-	}
+{	
+
+	for(std::vector<T>::size_type i = 0; i != mCharacters.size(); i++) {
+		Character* mCharacter = mCharacters[i];
 	
-
-	mWorld->setGravity(Eigen::Vector3d(0,-9.8,0.0));  // set gravity
-	mWorld->setTimeStep(1.0/mSimulationHz);     // set time step
-	mWorld->getConstraintSolver()->setCollisionDetector(dart::collision::BulletCollisionDetector::create());
-	mWorld->addSkeleton(mCharacter->GetSkeleton());  //
-	mWorld->addSkeleton(mGround);
-
-	mExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof-3);  // define mAction vector
-	mCurrentExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof-3);  // define mAction vector
-	mPrevExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof-3);  // define mAction vector
-
-	mHumanAction = Eigen::VectorXd::Zero(mNumHumanActiveDof);
-	mHumanAction_des = Eigen::VectorXd::Zero(mNumHumanActiveDof);;
-	mCurrentHumanAction = Eigen::VectorXd::Zero(mNumHumanActiveDof);  // define mAction vector
-	mPrevHumanAction = Eigen::VectorXd::Zero(mNumHumanActiveDof);  // define mAction vector
-
-	dynamic_torque = Eigen::VectorXd::Zero(mNumExoActiveDof-3);
-	mDesiredTorque = Eigen::VectorXd::Zero(mCharacter->GetSkeleton()->getNumDofs());	
-	// mcur_joint_vel = Eigen::VectorXd::Zero(mCharacter->GetSkeleton()->getNumDofs()-mRootJointDof);
-
-    for (int i=0;i<mCharacter->GetHumandof();i++)
-		const_index_human.push_back(i);
+		if(mCharacter->GetSkeleton()==nullptr){
+			std::cout<<"Initialize character First"<<std::endl;
+			exit(0);
+		}
+		if(mCharacter->GetSkeleton()->getRootBodyNode()->getParentJoint()->getType()=="FreeJoint")   //FreeJoint: 6 degree
+			mRootJointDof = 6;
+		else if(mCharacter->GetSkeleton()->getRootBodyNode()->getParentJoint()->getType()=="PlanarJoint") //PlanarJoint:
+			mRootJointDof = 3;	
+		else
+			mRootJointDof = 0;
+			
+		mNumHumanActiveDof = mCharacter->GetHumandof()-mRootJointDof; 
+		if (mUseExo)    
+			mNumExoActiveDof = mCharacter->GetSkeleton()->getNumDofs()-mNumHumanActiveDof - mRootJointDof ;  // remove the root Exo dof, ground_exo_waist(prismatic joint) and hipadd
+		else
+			mNumExoActiveDof = 0; 
+		std::cout << "human dof -----"  << mNumHumanActiveDof << "  exo dof -----"  << mNumExoActiveDof << std::endl;  // 
+		std::cout << "total dof -----" << mCharacter->GetSkeleton()->getNumDofs() << std::endl;
+		if(mUseMuscle)
+		{
+			int num_total_related_dofs = 0;
+			for(auto m : mCharacter->GetMuscles()){
+				m->Update();    //
+				num_total_related_dofs += m->GetNumRelatedDofs();   //num_total_related_dofts = m + num_related_dofs
+			}
+			mCurrentMuscleTuple.JtA = Eigen::VectorXd::Zero(num_total_related_dofs);  // define vector JtA
+			mCurrentMuscleTuple.L = Eigen::MatrixXd::Zero(mNumHumanActiveDof,mCharacter->GetMuscles().size()); //define Matrix L
+			mCurrentMuscleTuple.b = Eigen::VectorXd::Zero(mNumHumanActiveDof); // define vector b
+			mCurrentMuscleTuple.tau_des = Eigen::VectorXd::Zero(mNumHumanActiveDof); // define vector tau_dex
+			mActivationLevels = Eigen::VectorXd::Zero(mCharacter->GetMuscles().size()); // define activation levels a
+			std::cout << "muscle.size():" << mActivationLevels.rows() << std::endl;
+		}
 		
-    for (int i=mCharacter->GetHumandof();i<mCharacter->GetSkeleton()->getNumDofs();i++)
-		const_index_Exo.push_back(i);
 
-	std::cout << "mskeletondof:    " << mCharacter->GetSkeleton()->getNumDofs() << std::endl;
-	int Numbodynodes = mCharacter->GetSkeleton()->getNumBodyNodes();
+		mWorld->setGravity(Eigen::Vector3d(0,-9.8,0.0));  // set gravity
+		mWorld->setTimeStep(1.0/mSimulationHz);     // set time step
+		mWorld->getConstraintSolver()->setCollisionDetector(dart::collision::BulletCollisionDetector::create());
+		mWorld->addSkeleton(mCharacter->GetSkeleton());  //
+		mWorld->addSkeleton(mGround);
 
-	Initial_masses = Eigen::VectorXd::Zero(Numbodynodes);
-	Initial_inertia = Eigen::MatrixXd::Zero(3*Numbodynodes,3);
-	Initial_centerofmass = Eigen::VectorXd::Zero(Numbodynodes*3);
-	for (int i=0;i<Numbodynodes;i++)
-	{
-       Initial_masses(i) = mCharacter->GetSkeleton()->getBodyNode(i)->getMass();
+		mExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof-3);  // define mAction vector
+		mCurrentExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof-3);  // define mAction vector
+		mPrevExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof-3);  // define mAction vector
+
+		mHumanAction = Eigen::VectorXd::Zero(mNumHumanActiveDof);
+		mHumanAction_des = Eigen::VectorXd::Zero(mNumHumanActiveDof);;
+		mCurrentHumanAction = Eigen::VectorXd::Zero(mNumHumanActiveDof);  // define mAction vector
+		mPrevHumanAction = Eigen::VectorXd::Zero(mNumHumanActiveDof);  // define mAction vector
+
+		dynamic_torque = Eigen::VectorXd::Zero(mNumExoActiveDof-3);
+		mDesiredTorque = Eigen::VectorXd::Zero(mCharacter->GetSkeleton()->getNumDofs());	
+		// mcur_joint_vel = Eigen::VectorXd::Zero(mCharacter->GetSkeleton()->getNumDofs()-mRootJointDof);
+
+		for (int i=0;i<mCharacter->GetHumandof();i++)
+			const_index_human.push_back(i);
+			
+		for (int i=mCharacter->GetHumandof();i<mCharacter->GetSkeleton()->getNumDofs();i++)
+			const_index_Exo.push_back(i);
+
+		std::cout << "mskeletondof:    " << mCharacter->GetSkeleton()->getNumDofs() << std::endl;
+		int Numbodynodes = mCharacter->GetSkeleton()->getNumBodyNodes();
+
+		Initial_masses = Eigen::VectorXd::Zero(Numbodynodes);
+		Initial_inertia = Eigen::MatrixXd::Zero(3*Numbodynodes,3);
+		Initial_centerofmass = Eigen::VectorXd::Zero(Numbodynodes*3);
+		for (int i=0;i<Numbodynodes;i++)
+		{
+		Initial_masses(i) = mCharacter->GetSkeleton()->getBodyNode(i)->getMass();
+		}
+		for (int i=0;i<Numbodynodes;i++)
+		{
+			const Inertia& iner= mCharacter->GetSkeleton()->getBodyNode(i)->getInertia();
+			Initial_inertia.block(i*3,0,3,3) = iner.getMoment();
+		}
+
+		for (int i=0;i<Numbodynodes;i++)
+		{
+			const Inertia& iner= mCharacter->GetSkeleton()->getBodyNode(i)->getInertia();
+			Initial_centerofmass.segment<3>(i*3) = iner.getLocalCOM();
+		}
+
+		Reset(false);
+		mNumState = GetState().rows();             // p.rows +v.rows +1 
+		mNumHumanState = GetHumanState().rows();    // p.rows +v.rows +1 
+		mNumHumanObservation = GetHumanState().rows();
+		mNumFullObservation = GetFullObservation().rows();
+		std::cout << "NumState:    " << mNumState << std::endl;
+		std::cout << "NumHumanState:    " << mNumHumanState << std::endl;
+		if (mSymmetry)
+			std::cout << "Onput of NN:  " << mExoAction.rows()/2 << std::endl;
+		else
+			std::cout << "Onput of NN:  " << mExoAction.rows() << std::endl;
+		if (mUseMuscle)
+			std::cout << "--use Muscle--" << std::endl;
+		else
+			std::cout << "--not use Muscle--"  << std::endl;
 	}
-	for (int i=0;i<Numbodynodes;i++)
-	{
-		const Inertia& iner= mCharacter->GetSkeleton()->getBodyNode(i)->getInertia();
-		Initial_inertia.block(i*3,0,3,3) = iner.getMoment();
-	}
-
-	for (int i=0;i<Numbodynodes;i++)
-	{
-		const Inertia& iner= mCharacter->GetSkeleton()->getBodyNode(i)->getInertia();
-		Initial_centerofmass.segment<3>(i*3) = iner.getLocalCOM();
-	}
-
-	Reset(false);
-	mNumState = GetState().rows();             // p.rows +v.rows +1 
-	mNumHumanState = GetHumanState().rows();    // p.rows +v.rows +1 
-	mNumHumanObservation = GetHumanState().rows();
-	mNumFullObservation = GetFullObservation().rows();
-	std::cout << "NumState:    " << mNumState << std::endl;
-	std::cout << "NumHumanState:    " << mNumHumanState << std::endl;
-	if (mSymmetry)
-		std::cout << "Onput of NN:  " << mExoAction.rows()/2 << std::endl;
-	else
-		std::cout << "Onput of NN:  " << mExoAction.rows() << std::endl;
-    if (mUseMuscle)
-		std::cout << "--use Muscle--" << std::endl;
-	else
-		std::cout << "--not use Muscle--"  << std::endl;
 
 }
 void 
@@ -465,100 +476,101 @@ Environment::
 Reset(bool RSI)                                       	// execute the env.reset() after the terminal state is true
 {
 	mWorld->reset();                                    // set time = 0, Frame = 0, clear last Collision result in the world
+	for(std::vector<T>::size_type i = 0; i != mCharacters.size(); i++) {
+		Character* mCharacter = mCharacters[i];
+		mCharacter->GetSkeleton()->clearConstraintImpulses();  
+		mCharacter->GetSkeleton()->clearInternalForces();
+		mCharacter->GetSkeleton()->clearExternalForces();
+		double t = 0.0;
+		if(RSI)
+			t = dart::math::random(0.0,mCharacter->GetBVH()->GetMaxTime()*0.9);  //
+		
+		mWorld->setTime(t);   							// set time in the world 
+		mCharacter->Reset();  							// reset mT0 = mBVH->GetT0();	 mTc.translation[1] =0;
+		
+		dynamic_torque.setZero(); 
+		mExoAction.setZero();
+		mCurrentExoAction.setZero();
+		mPrevExoAction.setZero();
+		mHumanAction.setZero();
+		mPrevHumanAction.setZero();
+		mCurrentHumanAction.setZero();
+		std::tuple<Eigen::VectorXd,Eigen::VectorXd,std::map<std::string,Eigen::Vector3d>> pv = mCharacter->GetTargetPosAndVel(t,1.0/mControlHz);
 
-	mCharacter->GetSkeleton()->clearConstraintImpulses();  
-	mCharacter->GetSkeleton()->clearInternalForces();
-	mCharacter->GetSkeleton()->clearExternalForces();
-	double t = 0.0;
-	if(RSI)
-		t = dart::math::random(0.0,mCharacter->GetBVH()->GetMaxTime()*0.9);  //
-	
-	mWorld->setTime(t);   							// set time in the world 
-	mCharacter->Reset();  							// reset mT0 = mBVH->GetT0();	 mTc.translation[1] =0;
-	
-	dynamic_torque.setZero(); 
-	mExoAction.setZero();
-	mCurrentExoAction.setZero();
-	mPrevExoAction.setZero();
-	mHumanAction.setZero();
-	mPrevHumanAction.setZero();
-	mCurrentHumanAction.setZero();
-	std::tuple<Eigen::VectorXd,Eigen::VectorXd,std::map<std::string,Eigen::Vector3d>> pv = mCharacter->GetTargetPosAndVel(t,1.0/mControlHz);
-
-	mTargetPositions = std::get<0>(pv);
-	mTargetVelocities = std::get<1>(pv);
-	mTargetEE_pos = std::get<2>(pv);
-	mHuman_initial=Eigen::VectorXd::Zero(mCharacter->GetHumandof());
-	mExo_initial=Eigen::VectorXd::Zero(mNumExoActiveDof);
-	if (!RSI)
-		{
-			if (mUseHumaninitialstate)
+		mTargetPositions = std::get<0>(pv);
+		mTargetVelocities = std::get<1>(pv);
+		mTargetEE_pos = std::get<2>(pv);
+		mHuman_initial=Eigen::VectorXd::Zero(mCharacter->GetHumandof());
+		mExo_initial=Eigen::VectorXd::Zero(mNumExoActiveDof);
+		if (!RSI)
 			{
-				// std::cout << " --Use Human Model--" << std::endl;
-				mHuman_initial = mCharacter->GetHumanInitialState();
-				// std::cout << mCharacter->GetHumandof() << "-----" << mHuman_initial.size() << "-----" << mHuman_initial << std::endl;
-				mTargetPositions.head(mCharacter->GetHumandof()) = mHuman_initial;
+				if (mUseHumaninitialstate)
+				{
+					// std::cout << " --Use Human Model--" << std::endl;
+					mHuman_initial = mCharacter->GetHumanInitialState();
+					// std::cout << mCharacter->GetHumandof() << "-----" << mHuman_initial.size() << "-----" << mHuman_initial << std::endl;
+					mTargetPositions.head(mCharacter->GetHumandof()) = mHuman_initial;
+				}
+				if (mUseExoinitialstate)
+				{
+					// std::cout << "exo dof:::::::::" << mCharacter->GetExodof() << std::endl;
+					mExo_initial = mCharacter->GetExoInitialState();
+					mTargetPositions.tail(mNumExoActiveDof) = mExo_initial;	
+				}
 			}
-			if (mUseExoinitialstate)
+		cnt_step =0;
+		
+		// testing
+
+		randomized_latency = 0;
+		randomized_strength_ratios.setOnes(mNumExoActiveDof);
+
+		/////////randomization
+		randomize_masses(0.9,1.1); 
+		randomize_inertial(0.9,1.1); 
+		randomize_centerofmass(0.9,1.1); 
+		randomize_motorstrength(0.9,1.1); 
+		randomize_friction(0.9,1.1); 
+		randomize_controllatency(0, observation_latency);
+
+		// mCharacter->GetSkeleton()->setPositions(const_index_withoutroot, Positions_withoutroot);
+		
+		mCharacter->GetSkeleton()->setPositions(mTargetPositions);
+		mCharacter->GetSkeleton()->setVelocities(mTargetVelocities); //set velocities
+		mCharacter->GetSkeleton()->computeForwardKinematics(true,false,false);
+		for(int i=0; i<HISTORY_BUFFER_LEN; i++)
+		{
+			history_buffer_true_state.push_back(this->GetState());
+			history_buffer_control_state.push_back(this->GetState());
+			history_buffer_action.push_back(this->GetAction());
+			// history_buffer_true_human_state.push_back(this->GetHumanState());
+			// history_buffer_control_human_state.push_back(this->GetHumanState());
+			// history_buffer_true_COP.push_back(this->GetCOPRelative()); 
+		
+			// history_buffer_human_action.push_back(this->GetHumanAction());
+			history_buffer_torque.push_back(this->GetDesiredTorques());
+		}
+
+
+		// control_COP = GetControlCOP(); 
+		lastUpdateTimeStamp = 0.0; 
+		if (mUsehuman)
+		{
+			if (!mUsejointconstraint)
 			{
-				// std::cout << "exo dof:::::::::" << mCharacter->GetExodof() << std::endl;
-				mExo_initial = mCharacter->GetExoInitialState();
-				mTargetPositions.tail(mNumExoActiveDof) = mExo_initial;	
+				for (auto ss : mCharacter->GetJointConstraints())
+				{
+					BodyNode* bn1 = mCharacter->GetSkeleton()->getBodyNode(std::get<0>(ss));
+					BodyNode* bn2 = mCharacter->GetSkeleton()->getBodyNode(std::get<1>(ss));
+					Eigen::Vector3d offset1;
+					offset1 = bn1->getTransform()*std::get<2>(ss); 
+					auto constraint1 = std::make_shared<dart::constraint::BallJointConstraint>(bn1, bn2, offset1);
+					mWorld->getConstraintSolver()->addConstraint(constraint1);
+					mUsejointconstraint = true;
+				}
 			}
 		}
-    cnt_step =0;
-    
-    // testing
-
-    randomized_latency = 0;
-	randomized_strength_ratios.setOnes(mNumExoActiveDof);
-
-	/////////randomization
-	randomize_masses(0.9,1.1); 
-	randomize_inertial(0.9,1.1); 
-	randomize_centerofmass(0.9,1.1); 
-	randomize_motorstrength(0.9,1.1); 
-	randomize_friction(0.9,1.1); 
-    randomize_controllatency(0, observation_latency);
-
-	// mCharacter->GetSkeleton()->setPositions(const_index_withoutroot, Positions_withoutroot);
-	
-	mCharacter->GetSkeleton()->setPositions(mTargetPositions);
-	mCharacter->GetSkeleton()->setVelocities(mTargetVelocities); //set velocities
-	mCharacter->GetSkeleton()->computeForwardKinematics(true,false,false);
-	for(int i=0; i<HISTORY_BUFFER_LEN; i++)
-	{
-		history_buffer_true_state.push_back(this->GetState());
-		history_buffer_control_state.push_back(this->GetState());
-		history_buffer_action.push_back(this->GetAction());
-		// history_buffer_true_human_state.push_back(this->GetHumanState());
-		// history_buffer_control_human_state.push_back(this->GetHumanState());
-		// history_buffer_true_COP.push_back(this->GetCOPRelative()); 
-	
-		// history_buffer_human_action.push_back(this->GetHumanAction());
-		history_buffer_torque.push_back(this->GetDesiredTorques());
 	}
-
-
-	// control_COP = GetControlCOP(); 
-	lastUpdateTimeStamp = 0.0; 
-	if (mUsehuman)
-	{
-		if (!mUsejointconstraint)
-	     {
-			for (auto ss : mCharacter->GetJointConstraints())
-			{
-				BodyNode* bn1 = mCharacter->GetSkeleton()->getBodyNode(std::get<0>(ss));
-				BodyNode* bn2 = mCharacter->GetSkeleton()->getBodyNode(std::get<1>(ss));
-				Eigen::Vector3d offset1;
-				offset1 = bn1->getTransform()*std::get<2>(ss); 
-				auto constraint1 = std::make_shared<dart::constraint::BallJointConstraint>(bn1, bn2, offset1);
-				mWorld->getConstraintSolver()->addConstraint(constraint1);
-				mUsejointconstraint = true;
-			}
-	    }
-   	}
-
 }
 
 
