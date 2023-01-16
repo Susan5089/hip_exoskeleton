@@ -45,8 +45,7 @@ public:
 	void SetControlHz(int con_hz) {mControlHz = con_hz;}
 	void SetSimulationHz(int sim_hz) {mSimulationHz = sim_hz;}
 	void SetTerminalTime (double terminal_time) {mterminal_time = terminal_time;}
-	// void SetCharacter(Character* character) {mCharacter = character;}
-	void AddCharacter(Character* character) {mCharacters.push_back(character);}
+	void SetCharacter(Character* character) {mCharacter = character;}
 	void SetGround(const dart::dynamics::SkeletonPtr& ground) {mGround = ground;}
 	void SetWalkingSkill(bool walking) {walk_skill = walking;}
 	void SetSquattingSkill(bool squatting) {squat_skill = squatting;}
@@ -84,8 +83,7 @@ public:
 	Eigen::VectorXd GetMuscleTorques();
 
 	const dart::simulation::WorldPtr& GetWorld(){return mWorld;}
-	Character* GetCharacter(int idx){return mCharacters[idx];}
-
+	Character* GetCharacter(){return mCharacter;}
 	const dart::dynamics::SkeletonPtr& GetGround(){return mGround;}
 	int GetControlHz(){return mControlHz;}
 	int GetSimulationHz(){return mSimulationHz;}
@@ -171,7 +169,7 @@ private:
 	bool mhuman_obj_visual;
 	bool mPlotRelatedMuscle;
 	bool squat_skill, walk_skill;
-	std::vector<Character*>  mCharacters;
+	Character* mCharacter;
 	dart::dynamics::SkeletonPtr mGround;
 	Eigen::VectorXd mCurrentExoAction, mPrevExoAction; 
 	Eigen::VectorXd mCurrentHumanAction, mPrevHumanAction; 

@@ -13,35 +13,44 @@ int main(int argc,char** argv)
 	std::cout << "Seed: " << seed << std::endl; 
 	std::srand(seed);   
 	// std::srand(94);  
+	
 	MASS::Environment* env = new MASS::Environment();
-
 	if(argc==1)
 	{
 		std::cout<<"Provide Metadata.txt"<<std::endl;
 		return 0;
 	}
 	env->Initialize(std::string(argv[1]),true);
-	std::cout << "Seed: " << seed << std::endl; 
-	// env->ResetInitialState(env->GetCharacter()->GetInitialState());
-	// if(argc==3)
-	// 	env->SetUseMuscle(true);
-	// else
-	// 	env->SetUseMuscle(false);
-	// env->SetControlHz(30);
-	// env->SetSimulationHz(600);
-
-	// MASS::Character* character = new MASS::Character();
-	// character->LoadSkeleton(std::string(MASS_ROOT_DIR)+std::string("/data/human.xml"),true);
-	// if(env->GetUseMuscle())
-	// 	character->LoadMuscles(std::string(MASS_ROOT_DIR)+std::string("/data/muscle.xml"));
-	// character->LoadBVH(std::string(MASS_ROOT_DIR)+std::string("/data/motion/walk.bvh"),true);
+	std::tuple<Eigen::VectorXd,Eigen::VectorXd,std::map<std::string,Eigen::Vector3d>> pv = env->GetCharacter()->GetTargetPosAndVel(0,1.0/100);
+	Eigen::VectorXd mTargetPositions = std::get<0>(pv);
 	
-	// double kp = 300.0;
-	// character->SetPDParameters(kp,sqrt(2*kp));
-	// env->SetCharacter(character);
-	// env->SetGround(MASS::BuildFromFile(std::string(MASS_ROOT_DIR)+std::string("/data/ground.xml")));
+	std::vector<MASS::Environment*> mEnvs;
+	mEnvs.push_back(env);
 
-	// env->Initialize();
+	// int offset_x[2] = {-3, 3};
+	// for(int _i=0; _i<2; _i++){
+	// 	mTargetPositions[3] += offset_x[_i];
+	// 	MASS::Environment* env = new MASS::Environment();
+	// 	env->Initialize(std::string(argv[1]),true);
+	// 	env->Initialize();
+	// 	env->GetCharacter()->GetSkeleton()->setPositions(mTargetPositions);
+	// 	mTargetPositions[3] -= offset_x[_i];
+	// 	mEnvs.push_back(env);
+	// }
+
+	// int offset_y[4] = {-6, 6};
+	// for(int _i=0; _i<2; _i++){
+	// 	mTargetPositions[5] += offset_y[_i];
+	// 	MASS::Environment* env = new MASS::Environment();
+	// 	env->Initialize(std::string(argv[1]),true);
+	// 	env->Initialize();
+	// 	env->GetCharacter()->GetSkeleton()->setPositions(mTargetPositions);
+	// 	mTargetPositions[5] -= offset_y[_i];
+	// 	mEnvs.push_back(env);
+	// }
+	
+	std::cout << "mEnvs size: " << mEnvs.size() << std::endl; 
+	std::cout << "Seed: " << seed << std::endl; 
 
 	Py_Initialize();
 	np::initialize();
@@ -53,7 +62,7 @@ int main(int argc,char** argv)
 	if(argc == 2)
 	{
 		std::cout << "Seed:111111 "  << std::endl; 
-		window = new MASS::Window(env);
+		window = new MASS::Window(mEnvs);
 		std::cout << "Seed:2222222 " << std::endl; 
 	}
 	else
@@ -64,7 +73,7 @@ int main(int argc,char** argv)
 				std::cout<<"Please provide two networks"<<std::endl;
 				return 0;
 			}
-			window = new MASS::Window(env,argv[2],argv[3]);
+			window = new MASS::Window(mEnvs ,argv[2],argv[3]);
 		}
 		else if(env->GetUseMuscleNN() && env->GetUseHumanNN())
 		{
@@ -72,7 +81,7 @@ int main(int argc,char** argv)
 				std::cout<<"Please provide three networks"<<std::endl;
 				return 0;
 			}
-			window = new MASS::Window(env,argv[2],argv[3],argv[4]);
+			window = new MASS::Window(mEnvs, argv[2],argv[3],argv[4]);
 		}
 		else
 		{
@@ -81,7 +90,7 @@ int main(int argc,char** argv)
 				std::cout<<"Please provide the network"<<std::endl;
 				return 0;
 			}
-			window = new MASS::Window(env,argv[2]);
+			window = new MASS::Window(mEnvs, argv[2]);
 		}
 	}
 	// if(argc==1)
