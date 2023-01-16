@@ -1,0 +1,8 @@
+<JointConstraint>
+    <!-- <Constraint jointname="exo_leg_l" connectedjointname = "FemurL" JointPos ="0.075 -0.26 0.08" connectedJointPos="0.01 0 0.068"/> 
+    <Constraint jointname="exo_leg_r" connectedjointname = "FemurR" JointPos ="0.075 -0.26 -0.08" connectedJointPos="-0.02 0 -0.07"/> -->
+    <Constraint jointname="exo_leg_l" connectedjointname = "FemurL" JointPos ="0.085 -0.26 0.08" connectedJointPos="0.01 0 0.068"/> 
+    <Constraint jointname="exo_leg_r" connectedjointname = "FemurR" JointPos ="0.085 -0.26 -0.08" connectedJointPos="-0.02 0 -0.07"/>
+    <!-- <Constraint jointname="exo_leg_l" connectedjointname = "FemurL" JointPos ="0.085 -0.26 0.08" connectedJointPos="0.01 0 0.068"/> 
+    <Constraint jointname="exo_leg_r" connectedjointname = "FemurR" JointPos ="0.085 -0.26 -0.08" connectedJointPos="-0.02 0 -0.07"/> -->
+</JointConstraint>                                                                                                                      
