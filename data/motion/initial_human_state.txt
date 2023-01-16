@@ -1,0 +1,6 @@
+28
+Pelvis FemurR TibiaR TalusR FootThumbR FootPinkyR FemuRL TibiaL TalusL FootThumbL FootPinkyL
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+humanframe_config
+rotation 90
+translation 0.2089 -0.9809 0.0308

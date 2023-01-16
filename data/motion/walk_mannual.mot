@@ -1,0 +1,12 @@
+Units are S.I. units (second, meters, Newtons, ...)
+Angles are in degrees.
+name squat
+datarows 4
+datacolumns 15
+range 0  4
+endheader
+time exo_pelvis_tx exo_pelvis_ty exo_pelvis_tz exo_pelvis_tilt exo_pelvis_list exo_pelvis_rotation exo_hip_r exo_hip_l exo_knee_r exo_knee_l r_ankle_coupling l_ankle_coupling r_foot l_foot 
+4.5e0  2.08216e-01  9.303734e-01 0 0 0 0  1.568308e+01 0.702717e+01 -3.071511e+01 -18.26389 1.503134e+01  10.9355595 0 0
+5.0e0  2.38255e-01  9.333734e-01 0 0 0 0  2.248331e+01 0.255572e+01 -4.701966e+01 -12.979790 2.453635e+01 10.422923 0 0
+5.5e0  3.00254e-01  9.353734e-01 0 0 0 0  2.220249e+01 -0.56157e+01 -3.671623e+01 -5.695690 1.451259e+01 11.3102865 0 0
+6.0e0  3.63045e-01  9.263734e-01 0 0 0 0  1.889864e+01 -1.378721e+01 -2.154799e+01 -4.115907e-01 2.648196e+00 1.419765e+01 0 0
